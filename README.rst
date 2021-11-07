@@ -67,6 +67,7 @@ References
        | `golang crud api - Baidu search <https://www.baidu.com/s?wd=golang+crud+api>`_
        | `golang crud api - Yandex search <https://www.yandex.com/search/?text=golang+crud+api>`_
 
+.. [2] `Tutorial: Developing a RESTful API with Go and Gin - The Go Programming Language <https://golang.org/doc/tutorial/web-service-gin>`_
 
 .. _Go: https://golang.org/
 .. _Ubuntu 20.04: https://releases.ubuntu.com/20.04/

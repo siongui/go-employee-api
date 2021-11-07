@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -37,9 +38,32 @@ func postEmployee(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, newEmployee)
 }
 
+// getEmployeeByID locates the employee whose ID value matches the id
+// parameter sent by the client, then returns that employee as a response.
+func getEmployeeByID(c *gin.Context) {
+	s := c.Param("id")
+
+	id, err := strconv.Atoi(s)
+	if err != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "employee not found"})
+		return
+	}
+
+	// Loop over the list of employees, looking for
+	// an employee whose ID value matches the parameter.
+	for _, e := range employees {
+		if e.Id == id {
+			c.IndentedJSON(http.StatusOK, e)
+			return
+		}
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "employee not found"})
+}
+
 func main() {
 	router := gin.Default()
 	router.GET("/employees", getEmployees)
+	router.GET("/employee/:id", getEmployeeByID)
 	router.POST("/employee", postEmployee)
 
 	router.Run("localhost:8080")

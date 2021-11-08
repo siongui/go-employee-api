@@ -53,6 +53,14 @@ test_delete_employee:
 	curl http://localhost:8080/employee/3 \
 	--request "DELETE"
 
+test_update_employee:
+	@echo "\033[92mUpdate a employee ...\033[0m"
+	curl http://localhost:8080/employee \
+	--include \
+	--header "Content-Type: application/json" \
+	--request "PUT" \
+	--data '{"id": 1,"name": "MyUpdatedName","title": "CEO"}'
+
 test_curl_all:
 	make test_post_employee
 	@sleep 2
@@ -61,6 +69,10 @@ test_curl_all:
 	make test_get_employee
 	@sleep 2
 	make test_delete_employee
+	@sleep 2
+	make test_get_all_employees
+	@sleep 2
+	make test_update_employee
 	@sleep 2
 	make test_get_all_employees
 	@echo "\033[92m"Test curl finished"...\033[0m"

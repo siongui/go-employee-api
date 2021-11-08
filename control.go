@@ -99,3 +99,24 @@ func deleteEmployeeByID(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, gin.H{"message": "employee with id " + s + " deleted"})
 	log.Info("employee with id " + s + " deleted")
 }
+
+// updateEmployee updates an employee from JSON received in the request body.
+func updateEmployee(c *gin.Context) {
+	var e Employee
+
+	// Call BindJSON to bind the received JSON to e.
+	if err := c.BindJSON(&e); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		log.Error(err)
+		return
+	}
+
+	// Update the employee to the database.
+	if _, err := UpdateEmployee(e); err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		log.Error(err)
+		return
+	}
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "employee with id " + strconv.Itoa(e.Id) + " updated"})
+	log.Info(e, " updated in database")
+}

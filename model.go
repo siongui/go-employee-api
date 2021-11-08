@@ -82,3 +82,11 @@ func DeleteById(id int) (sql.Result, error) {
 		Where("id = ?", id).
 		Exec(ctx)
 }
+
+// UpdateEmployee updates the employee in the database.
+func UpdateEmployee(e Employee) (sql.Result, error) {
+	return db.NewUpdate().
+		Model(&e).
+		Where("id = ?", e.Id).
+		Exec(ctx)
+}

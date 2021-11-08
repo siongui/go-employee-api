@@ -71,4 +71,34 @@ func TestSqliteOperation(t *testing.T) {
 		return
 	}
 	t.Log(es)
+
+	// test updating employee
+	ue := Employee{Id: 2, Name: "MyUpdate", Title: "CEO"}
+	_, err = UpdateEmployee(ue)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	es, err = SelectAllEmployees()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	if len(es) != 1 {
+		t.Error("should left only one record after deletion")
+		return
+	}
+	t.Log(es)
+	if es[0].Id != 2 {
+		t.Error("updated id of employee not correct")
+		return
+	}
+	if es[0].Name != "MyUpdate" {
+		t.Error("updated name of employee not correct")
+		return
+	}
+	if es[0].Title != "CEO" {
+		t.Error("updated title of employee not correct")
+		return
+	}
 }

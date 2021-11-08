@@ -59,6 +59,7 @@ The API endpoints:
 - ``GET /employees`` returns all employees in database
 - ``GET /employee/:id`` returns the employee by given id if any.
 - ``POST /employee`` creates a new employee
+- ``DELETE /employee/:id`` deletes the employee by given id if any.
 
 Use curl_ to try the API endpoints:
 
@@ -81,6 +82,11 @@ Use curl_ to try the API endpoints:
   # Read a new employee whose id is 1
   $ curl http://localhost:8080/employee/1
 
+.. code-block:: bash
+
+  # Delete the employee whose id is 1
+  $ curl http://localhost:8080/employee/1 \
+    --request "DELETE"
 
 See `Makefile <Makefile>`_ for more curl examples.
 

@@ -15,6 +15,7 @@ func main() {
 	router.GET("/employees", getEmployees)
 	router.GET("/employee/:id", getEmployeeByID)
 	router.POST("/employee", postEmployee)
+	router.DELETE("/employee/:id", deleteEmployeeByID)
 
 	router.Run("localhost:8080")
 }

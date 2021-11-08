@@ -19,18 +19,21 @@ func TestSqliteOperation(t *testing.T) {
 		return
 	}
 
+	// test insertion
 	_, err = InsertEmployee(employees[0])
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
+	// test insertion
 	_, err = InsertEmployee(employees[1])
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
+	// test reading all employees
 	es, err := SelectAllEmployees()
 	if err != nil {
 		t.Error(err)
@@ -38,6 +41,7 @@ func TestSqliteOperation(t *testing.T) {
 	}
 	t.Log(es)
 
+	// test selection by id
 	e, err := SelectById(1)
 	if err != nil {
 		t.Error(err)
@@ -50,4 +54,21 @@ func TestSqliteOperation(t *testing.T) {
 		t.Error(err)
 		return
 	}
+
+	// test deletion by id
+	_, err = DeleteById(1)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	es, err = SelectAllEmployees()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	if len(es) != 1 {
+		t.Error("should left only one record after deletion")
+		return
+	}
+	t.Log(es)
 }

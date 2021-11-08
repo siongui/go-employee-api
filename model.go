@@ -65,7 +65,7 @@ func InsertEmployee(e Employee) (result sql.Result, err error) {
 	return db.NewInsert().Model(&e).Exec(ctx)
 }
 
-// SelectById selects the record by id in the database.
+// SelectById selects the employee by id in the database.
 func SelectById(id int) (e Employee, err error) {
 	err = db.NewSelect().
 		Model(&e).
@@ -73,4 +73,12 @@ func SelectById(id int) (e Employee, err error) {
 		Limit(1).
 		Scan(ctx)
 	return
+}
+
+// DeleteById deletes the employee by id in the database.
+func DeleteById(id int) (sql.Result, error) {
+	return db.NewDelete().
+		Model((*Employee)(nil)).
+		Where("id = ?", id).
+		Exec(ctx)
 }

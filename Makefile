@@ -9,7 +9,7 @@ ALL_GO_SOURCES=$(shell /bin/sh -c "find *.go | grep -v _test.go")
 run: fmt
 	go run $(ALL_GO_SOURCES)
 
-test:
+test: fmt
 	go test -v -race
 
 fmt:

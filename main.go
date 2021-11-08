@@ -1,25 +1,21 @@
 package main
 
 import (
+	"database/sql"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-type Employee struct {
-	Id    int    `json:"id"`
-	Name  string `json:"name"`
-	Title string `json:"title"`
-}
-
-var employees = []Employee{
-	{Id: 1, Name: "Hello", Title: "Engineer"},
-	{Id: 2, Name: "World", Title: "Manager"},
-}
-
 // getEmployees responds with the list of all employees as JSON.
 func getEmployees(c *gin.Context) {
+	employees, err := SelectAllEmployees()
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "database operation error"})
+		return
+	}
+
 	c.IndentedJSON(http.StatusOK, employees)
 }
 
@@ -33,8 +29,11 @@ func postEmployee(c *gin.Context) {
 		return
 	}
 
-	// Add the new employee to the slice.
-	employees = append(employees, newEmployee)
+	// Add the new employee to the database.
+	if _, err := InsertEmployee(newEmployee); err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "database operation error"})
+		return
+	}
 	c.IndentedJSON(http.StatusCreated, newEmployee)
 }
 
@@ -49,18 +48,30 @@ func getEmployeeByID(c *gin.Context) {
 		return
 	}
 
-	// Loop over the list of employees, looking for
-	// an employee whose ID value matches the parameter.
-	for _, e := range employees {
-		if e.Id == id {
-			c.IndentedJSON(http.StatusOK, e)
-			return
-		}
+	// Looking for an employee whose ID value matches the parameter in the
+	// database.
+	e, err := SelectById(id)
+
+	if err == sql.ErrNoRows {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "employee not found"})
+		return
 	}
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "employee not found"})
+
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "database operation error"})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, e)
 }
 
 func main() {
+	InitSQLite(true)
+	_, err := CreateEmployeeTable()
+	if err != nil {
+		panic(err)
+	}
+
 	router := gin.Default()
 	router.GET("/employees", getEmployees)
 	router.GET("/employee/:id", getEmployeeByID)

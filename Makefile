@@ -4,8 +4,13 @@ ifndef GOROOT
 endif
 
 
+ALL_GO_SOURCES=$(shell /bin/sh -c "find *.go | grep -v _test.go")
+
 run: fmt
-	go run main.go
+	go run $(ALL_GO_SOURCES)
+
+test:
+	go test -v -race
 
 fmt:
 	go fmt *.go
@@ -28,6 +33,8 @@ test_get_employee:
 	curl http://localhost:8080/employee/1
 	@echo
 	curl http://localhost:8080/employee/t1
+	@echo
+	curl http://localhost:8080/employee/3
 	@echo
 
 modinit:

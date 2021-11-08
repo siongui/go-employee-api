@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
 // getEmployees responds with the list of all employees as JSON.
@@ -13,6 +14,7 @@ func getEmployees(c *gin.Context) {
 	employees, err := SelectAllEmployees()
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "database operation error"})
+		log.Error(err)
 		return
 	}
 
@@ -26,15 +28,19 @@ func postEmployee(c *gin.Context) {
 	// Call BindJSON to bind the received JSON to
 	// newEmployee.
 	if err := c.BindJSON(&newEmployee); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "bad JSON format"})
+		log.Error(err)
 		return
 	}
 
 	// Add the new employee to the database.
 	if _, err := InsertEmployee(newEmployee); err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "database operation error"})
+		log.Error(err)
 		return
 	}
 	c.IndentedJSON(http.StatusCreated, newEmployee)
+	log.Info(newEmployee, " inserted to database")
 }
 
 // getEmployeeByID locates the employee whose ID value matches the id
@@ -45,6 +51,7 @@ func getEmployeeByID(c *gin.Context) {
 	id, err := strconv.Atoi(s)
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "employee not found"})
+		log.Error(err)
 		return
 	}
 
@@ -54,13 +61,16 @@ func getEmployeeByID(c *gin.Context) {
 
 	if err == sql.ErrNoRows {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "employee not found"})
+		log.Error(err)
 		return
 	}
 
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "database operation error"})
+		log.Error(err)
 		return
 	}
 
 	c.IndentedJSON(http.StatusOK, e)
+	log.Info(e, " selected and returned")
 }

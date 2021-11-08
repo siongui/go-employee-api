@@ -49,6 +49,42 @@ Requirement
 - Unit Testing is required.
 
 
+Usage
++++++
+
+Use gin_ to create CRUD [1]_ [2]_ API.
+
+The API endpoints:
+
+- ``GET /employees`` returns all employees in database
+- ``GET /employee/:id`` returns the employee by given id if any.
+- ``POST /employee`` creates a new employee
+
+Use curl_ to try the API endpoints:
+
+.. code-block:: bash
+
+  # Get all employees
+  $ curl http://localhost:8080/employees
+
+.. code-block:: bash
+
+  # Create a new employee
+  $ curl http://localhost:8080/employee \
+    --include \
+    --header "Content-Type: application/json" \
+    --request "POST" \
+    --data '{"id": 3,"name": "Sawadee","title": "Senior Engineer"}'
+
+.. code-block:: bash
+
+  # Read a new employee whose id is 1
+  $ curl http://localhost:8080/employee/1
+
+
+See `Makefile <Makefile>`_ for more curl examples.
+
+
 UNLICENSE
 +++++++++
 
@@ -75,3 +111,5 @@ References
 .. _UNLICENSE: https://unlicense.org/
 .. _bun: https://github.com/uptrace/bun
 .. _logrus: https://github.com/sirupsen/logrus
+.. _gin: https://github.com/gin-gonic/gin
+.. _curl: https://curl.se/

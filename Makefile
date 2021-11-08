@@ -15,27 +15,47 @@ test: fmt
 fmt:
 	go fmt *.go
 
-test_get_employees:
+test_get_all_employees:
+	@echo "\033[92mRead all employees ...\033[0m"
 	curl http://localhost:8080/employees
-	@echo
 
 test_post_employee:
+	@echo "\033[92mCreate a employee ...\033[0m"
+	curl http://localhost:8080/employee \
+	--include \
+	--header "Content-Type: application/json" \
+	--request "POST" \
+	--data '{"id": 1,"name": "Hello","title": "Engineer"}'
+	@sleep 1
+	@echo "\033[92mCreate a employee ...\033[0m"
+	curl http://localhost:8080/employee \
+	--include \
+	--header "Content-Type: application/json" \
+	--request "POST" \
+	--data '{"id": 2,"name": "Hello","title": "Manager"}'
+	@sleep 1
+	@echo "\033[92mCreate a employee ...\033[0m"
 	curl http://localhost:8080/employee \
 	--include \
 	--header "Content-Type: application/json" \
 	--request "POST" \
 	--data '{"id": 3,"name": "Sawadee","title": "Senior Engineer"}'
-	@echo
-	make test_get_employees
-	@echo
 
 test_get_employee:
+	@echo "\033[92mGet the employee whose id is 1...\033[0m"
 	curl http://localhost:8080/employee/1
-	@echo
-	curl http://localhost:8080/employee/t1
-	@echo
-	curl http://localhost:8080/employee/3
-	@echo
+	@sleep 1
+	@echo "\033[92mGet the employee whose id is 4...\033[0m"
+	curl http://localhost:8080/employee/4
+
+test_curl_all:
+	make test_post_employee
+	@sleep 2
+	make test_get_all_employees
+	@sleep 2
+	make test_get_employee
+	@sleep 2
+	@echo "\033[92m"Test curl finished"...\033[0m"
 
 modinit:
 	go mod init github.com/siongui/go-employee-api
